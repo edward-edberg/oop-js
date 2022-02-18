@@ -349,7 +349,7 @@ tesla.accelerate();
 */
 ///////////////////////////////////////
 // Inheritance Between "Classes": ES6 Classes
-
+/*
 class PersonCl {
   constructor(fullName, birthYear) {
     this.fullName = fullName;
@@ -383,3 +383,126 @@ class PersonCl {
     console.log('Hey there 👋');
   }
 }
+
+class StudentCl extends PersonCl {
+  constructor(fullName, birthYear, course) {
+    // Always needs to happen first!
+    super(fullName, birthYear);
+    this.course = course;
+  }
+  introduce() {
+    console.log(`My name is ${this.fullName} and I study ${this.course}`);
+  }
+  calcAge() {
+    console.log(`I'm ${2037 - this.birthYear} years`);
+  }
+}
+
+const martha = new StudentCl('Martha Jones', 2012, 'CS');
+console.log(martha);
+martha.introduce();
+martha.calcAge();
+
+///////////////////////////////////////
+// Inheritance Between "Classes": Object.create
+
+const PersonProto = {
+  calcAge() {
+    console.log(2037 - this.birthYear);
+  },
+
+  init(firstName, birthYear) {
+    this.firstName = firstName;
+    this.birthYear = birthYear;
+  },
+};
+
+const steven = Object.create(PersonProto);
+
+const StudentProto = Object.create(PersonProto);
+StudentProto.init = function (firstName, birthYear, course) {
+  PersonProto.init.call(this, firstName, birthYear);
+  this.course = course;
+};
+
+StudentProto.introduce = function () {
+  console.log(`My name is ${this.fullName} and I study ${this.course}`);
+};
+const jay = Object.create(StudentProto);
+jay.init('Jay', 2010, 'CS');
+jay.introduce();
+jay.calcAge();
+*/
+
+// Public fields
+// Private fields
+// Public methods
+// Private methods
+// Static
+
+class Account {
+  // public fields
+  locale = navigator.language;
+
+  // 2) Private fields
+  #movements = [];
+  #pin;
+  // 3) Public
+
+  //
+
+  constructor(owner, currency, pin) {
+    this.owner = owner;
+    this.currency = currency;
+    this.#pin = pin;
+    // protected
+    // this._movements = [];
+    // this.locale = navigator.language;
+
+    console.log(`Thanks for opening an account, ${owner}`);
+  }
+  // 3 public
+  getMovements() {
+    return this.#movements;
+  }
+
+  deposit(val) {
+    this.#movements.push(val);
+    return this;
+  }
+
+  withdraw(val) {
+    this.deposit(-val);
+    return this;
+  }
+
+  requestLoan(val) {
+    if (this._approveLoan(val)) {
+      this.deposit(val);
+      console.log(`Loan approved`);
+      return this;
+    }
+  }
+  // 4 private methods
+  _approveLoan(val) {
+    return true;
+  }
+}
+
+const acc1 = new Account('Jonas', 'EUR', 1111);
+console.log(acc1);
+
+// acc1.movements.push(250);
+// acc1.movements.push(-140);
+acc1.deposit(250);
+acc1.withdraw(140);
+acc1.requestLoan(1000);
+// acc1._approveLoan(1000);
+console.log(acc1);
+console.log(acc1.pin);
+// console.log(acc1.getMovements());
+
+// Chaining
+acc1.deposit(300).deposit(500).withdraw(35).requestLoan(2000);
+console.log(acc1);
+console.log(acc1.getMovements());
